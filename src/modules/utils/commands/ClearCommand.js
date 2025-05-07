@@ -5,9 +5,14 @@ module.exports = {
 	description: 'Supprime les messages',
 	options: [],
 	run: async (client, interaction) => {
-		const fetched = await interaction.channel.messages.fetch({ limit: 100 });
-		await interaction.channel.bulkDelete(fetched);
+		try {
+			const fetched = await interaction.channel.messages.fetch({ limit: 100 });
+			await interaction.channel.bulkDelete(fetched);
 
-		await interaction.reply();
+			await interaction.reply({ content: 'Messages supprimés avec succès', flags: 64 });
+		} catch (e) {
+			console.error(e);
+			await interaction.reply({ content: 'Une erreur est survenue.', flags: 64 });
+		}
 	}
 }
