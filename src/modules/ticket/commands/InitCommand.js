@@ -5,9 +5,6 @@ module.exports = {
 	description: 'Génère le message pour les tickets',
 	options: [],
 	run: async (client, interaction) => {
-		const fetched = await interaction.channel.messages.fetch({ limit: 100 });
-		await interaction.channel.bulkDelete(fetched);
-
 		const embed = new EmbedBuilder()
 			.setColor('#ffffff')
 			.setTitle('Recrutement')
