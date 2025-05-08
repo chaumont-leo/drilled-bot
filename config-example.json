@@ -1,0 +1,17 @@
+{
+    "support": {
+        "role": ""
+    },
+    "welcome": {
+        "baseRole": "",
+        "channel": ""
+    },
+    "ticket": {
+        "channel": ""
+    },
+    "roster": {
+        "roleChangeChannel": "",
+        "channel": "",
+        "roles": []
+    }
+}
