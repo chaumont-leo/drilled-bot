@@ -29,9 +29,6 @@ module.exports = {
 				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
 				: interaction.channel;
 
-			const fetched = await channel.messages.fetch({ limit: 100 });
-			await channel.bulkDelete(fetched);
-
 			await refreshRoster(channel, roles, interaction.guild.members.cache);
 
 			return interaction.reply({ content: `Le roster a été actualisé dans le channel <#${channel.id}> avec succès !`, flags: 64});

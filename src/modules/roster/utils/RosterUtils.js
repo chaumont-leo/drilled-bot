@@ -1,12 +1,10 @@
 const {EmbedBuilder} = require("discord.js");
-const configManager = require('../../../config/ConfigManager');
 const refreshRoster = async (channel, roles, guildMembers) => {
-
-	const channelId = configManager.getConfigValue('roster.channel');
-
-	if(!channelId) throw new Error('No channel specified');
-
 	try {
+
+		const fetched = await channel.messages.fetch({ limit: 100 });
+		await channel.bulkDelete(fetched);
+
 		const rolesMembers = roles
 			.map(role => {
 				return  {
