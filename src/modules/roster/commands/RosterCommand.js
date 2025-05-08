@@ -22,15 +22,15 @@ module.exports = {
 			flags: 64
 		});
 
-		const fetched = await interaction.channel.messages.fetch({ limit: 100 });
-		await interaction.channel.bulkDelete(fetched);
-
 		try {
 			await interaction.guild.members.fetch();
 
 			const channel = configManager.getConfigValue('roster.channel')
 				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
 				: interaction.channel;
+
+			const fetched = await channel.messages.fetch({ limit: 100 });
+			await channel.bulkDelete(fetched);
 
 			await refreshRoster(channel, roles, interaction.guild.members.cache);
 
