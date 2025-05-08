@@ -14,7 +14,7 @@ class WelcomeListener extends BaseListener {
 	handle() {
 		this.client.on('guildMemberUpdate', async (oldMember, newMember) => {
 
-			if(!this.factionRoles || this.factionRoles.size === 0) return;
+			if(!this.factionRoles || this.factionRoles.length === 0) return;
 
 			const oldRoleIds = new Set(oldMember.roles.cache.map(r => r.id));
 			const newRoleIds = new Set(newMember.roles.cache.map(r => r.id));
@@ -22,22 +22,14 @@ class WelcomeListener extends BaseListener {
 			const addedRoles = [...newRoleIds].filter(id => !oldRoleIds.has(id));
 			const removedRoles = [...oldRoleIds].filter(id => !newRoleIds.has(id));
 
-			// const addedRoles = newMember.roles.cache.difference(oldMember.roles.cache);
-			console.log('Roles Ajoutés', addedRoles);
-
-			console.log('Roles Ajoutés Size', addedRoles);
-			// const removedRoles = oldMember.roles.cache.difference(newMember.roles.cache);
-			console.log('Roles Retirés', removedRoles);
-			if(addedRoles.size > 0) await this.handleAddRoles(newMember, addedRoles);
-			if(removedRoles.size > 0) await this.handleRemoveRoles(newMember, removedRoles);
+			if(addedRoles.length > 0) await this.handleAddRoles(newMember, addedRoles);
+			if(removedRoles.length > 0) await this.handleRemoveRoles(newMember, removedRoles);
 
 		})
 	}
 
 	async handleAddRoles(member, roles) {
 		const roleId = roles.find(roleId => this.factionRoles.includes(roleId))
-
-		console.log(roleId);
 
 		if(!roleId) return;
 
