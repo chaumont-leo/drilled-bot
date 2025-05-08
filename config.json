@@ -10,6 +10,8 @@
         "channel": ""
     },
     "roster": {
+        "roleChangeChannel": "",
+        "channel": "",
         "roles": []
     }
 }

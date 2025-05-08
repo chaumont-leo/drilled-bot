@@ -19,7 +19,7 @@ class Handler {
 				switch (folder) {
 					case 'listeners': this.handleListeners(folderPath); break;
 					case 'commands': await this.handleCommands(folderPath); break;
-					case 'buttons': this.handleButtons(folderPath)
+					case 'buttons': this.handleButtons(folderPath); break;
 				}
 			}
 		}
