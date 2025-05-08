@@ -1,10 +1,14 @@
-const { ApplicationCommandOptionType, EmbedBuilder} = require("discord.js");
+const { ApplicationCommandOptionType, EmbedBuilder, PermissionsBitField} = require("discord.js");
 
 module.exports = {
 	name: 'roster',
 	description: 'Affiche le roster',
 	options: [],
 	run: async (client, interaction) => {
+
+		if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
+		}
 
 		if(!process.env.ROSTER_ROLES_ID) return interaction.reply({
 			content: 'Aucun roles n\'a été défini pour le roster.',

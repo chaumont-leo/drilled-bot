@@ -1,4 +1,4 @@
-const {EmbedBuilder, ButtonBuilder, ActionRowBuilder} = require("discord.js");
+const { PermissionsBitField } = require("discord.js");
 
 module.exports = {
 	name: 'clear',
@@ -6,6 +6,10 @@ module.exports = {
 	options: [],
 	run: async (client, interaction) => {
 		try {
+			if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+				return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
+			}
+
 			const fetched = await interaction.channel.messages.fetch({ limit: 100 });
 			await interaction.channel.bulkDelete(fetched);
 
