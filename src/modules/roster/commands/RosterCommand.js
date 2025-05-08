@@ -29,7 +29,7 @@ module.exports = {
 			await interaction.guild.members.fetch();
 
 			const channel = configManager.getConfigValue('roster.channel')
-				? await interaction.guild.channels.fetch(configManager.getConfigValue('welcome.channel'))
+				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
 				: interaction.channel;
 
 			await refreshRoster(channel, roles, interaction.guild.members.cache);
