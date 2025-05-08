@@ -1,0 +1,15 @@
+{
+    "support": {
+        "role": ""
+    },
+    "welcome": {
+        "baseRole": "",
+        "channel": ""
+    },
+    "ticket": {
+        "channel": ""
+    },
+    "roster": {
+        "roles": []
+    }
+}

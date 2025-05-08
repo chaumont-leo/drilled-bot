@@ -1,4 +1,5 @@
 const { ApplicationCommandOptionType } = require("discord.js");
+const configManager = require('../../../config/ConfigManager');
 
 module.exports = {
 	name: 'remove',
@@ -12,6 +13,10 @@ module.exports = {
 		}
 	],
 	run: async (client, interaction) => {
+
+		if (!interaction.member.roles.cache.has(configManager.getConfigValue('support.role'))) {
+			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
+		}
 
 		const member = interaction.options.getMember("utilisateur");
 

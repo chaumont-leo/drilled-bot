@@ -2,6 +2,7 @@ const {AttachmentBuilder, EmbedBuilder} = require("discord.js");
 const {join} = require("path");
 
 const BaseListener = require('../../BaseListener');
+const configManager = require('../../../config/ConfigManager');
 
 class WelcomeListener extends BaseListener {
 	constructor(client) {
@@ -13,24 +14,32 @@ class WelcomeListener extends BaseListener {
 			const attachments = ['logo', 'logoWithoutBg']
 				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}.png`)));
 
-			const channel = member.guild.systemChannel;
+			try {
+				const channel = configManager.getConfigValue('welcome.channel')
+					? await member.guild.channels.fetch(configManager.getConfigValue('welcome.channel'))
+					: member.guild.systemChannel;
 
-			if (channel) {
-				const embed = new EmbedBuilder()
-					.setTitle('**Bienvenue chez la DRILLED**')
-					.setColor('#ffffff') // Vous pouvez définir des couleurs avec des chaînes de caractères hexadécimales, des nombres ou des strings prédéfinis
-					.setDescription(`Bienvenue ${member} ! #${member.guild.memberCount} \n Si tu souhaites être recruté ouvre un ticket \n <#${process.env.WELCOME_CHANNEL_ID}>`)
-					.setThumbnail('attachment://logo.png')
-					.setFooter({
-						text: 'DRILLED',
-						iconURL: 'attachment://logoWithoutBg.png'
-					})
-					.setTimestamp();
-				await channel.send({ embeds: [embed], files: attachments });
-			}
+				const ticketChannelId = configManager.getConfigValue('ticket.channel');
 
-			if(process.env.BASE_ROLE_ID) {
-				await member.roles.add(process.env.BASE_ROLE_ID)
+				if (channel) {
+					const embed = new EmbedBuilder()
+						.setTitle('**Bienvenue chez la DRILLED**')
+						.setColor('#ffffff') // Vous pouvez définir des couleurs avec des chaînes de caractères hexadécimales, des nombres ou des strings prédéfinis
+						.setDescription(`Bienvenue ${member} ! #${member.guild.memberCount} \n Si tu souhaites être recruté ouvre un ticket \n <#${ticketChannelId}>`)
+						.setThumbnail('attachment://logo.png')
+						.setFooter({
+							text: 'DRILLED',
+							iconURL: 'attachment://logoWithoutBg.png'
+						})
+						.setTimestamp();
+					await channel.send({ embeds: [embed], files: attachments });
+				}
+
+				if(configManager.getConfigValue('welcome.baseRole')) {
+					await member.roles.add(configManager.getConfigValue('welcome.baseRole'))
+				}
+			} catch (e) {
+				console.error(e);
 			}
 		})
 	}

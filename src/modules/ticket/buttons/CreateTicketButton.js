@@ -1,4 +1,5 @@
 const { PermissionFlagsBits, ChannelType, ButtonBuilder, ActionRowBuilder, EmbedBuilder } = require('discord.js')
+const configManager = require('../../../config/ConfigManager');
 
 module.exports = {
 	id: 'create_ticket',
@@ -19,7 +20,7 @@ module.exports = {
 							PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory],
 					},
 					{
-						id: process.env.SUPPORT_ROLE_ID,
+						id: configManager.getConfigValue('support.role'),
 						allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
 							PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory],
 					},

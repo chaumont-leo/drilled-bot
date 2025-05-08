@@ -1,5 +1,8 @@
 const { ApplicationCommandOptionType, EmbedBuilder, PermissionsBitField} = require("discord.js");
 
+const configManager = require('../../../config/ConfigManager');
+
+
 module.exports = {
 	name: 'roster',
 	description: 'Affiche le roster',
@@ -10,7 +13,9 @@ module.exports = {
 			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
 		}
 
-		if(!process.env.ROSTER_ROLES_ID) return interaction.reply({
+		const roles = configManager.getConfigValue('roster.roles');
+
+		if(!roles || roles.length === 0) return interaction.reply({
 			content: 'Aucun roles n\'a été défini pour le roster.',
 			flags: 64
 		});
@@ -20,7 +25,6 @@ module.exports = {
 
 		try {
 			await interaction.guild.members.fetch();
-			const roles = (process.env.ROSTER_ROLES_ID).toString().split(';');
 			const rolesMembers = roles
 				.map(role => {
 					return  {
