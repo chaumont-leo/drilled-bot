@@ -7,7 +7,7 @@ module.exports = {
 	options: [
 		{
 			name: "utilisateur",
-			description: "Choisissez l'utilisateur que vous souhaitez ajouter au ticket.",
+			description: "Choisissez l'utilisateur que vous souhaitez retirer du ticket.",
 			type: ApplicationCommandOptionType.User,
 			required: true
 		}
@@ -16,6 +16,10 @@ module.exports = {
 
 		if (!interaction.member.roles.cache.has(configManager.getConfigValue('support.role'))) {
 			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
+		}
+
+		if(!interaction.channel.name.includes('ticket')) {
+			return await interaction.reply({ content: 'Tu dois être dans un ticket pour réaliser cette commande.', flags: 64 });
 		}
 
 		const member = interaction.options.getMember("utilisateur");

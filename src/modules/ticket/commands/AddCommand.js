@@ -18,6 +18,10 @@ module.exports = {
 			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
 		}
 
+		if(!interaction.channel.name.includes('ticket')) {
+			return await interaction.reply({ content: 'Tu dois être dans un ticket pour réaliser cette commande.', flags: 64 });
+		}
+
 		const member = interaction.options.getMember("utilisateur");
 
 		if(!member || !member.id) return interaction.reply({ content: 'L\'utilisateur choisi est invalide.', flags: 64 })
