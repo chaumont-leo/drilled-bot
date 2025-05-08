@@ -17,7 +17,7 @@ class WelcomeListener extends BaseListener {
 			if(!this.factionRoles || this.factionRoles.size === 0) return;
 
 			const addedRoles = newMember.roles.cache.difference(oldMember.roles.cache);
-			const removedRoles = newMember.roles.cache.difference(oldMember.roles.cache);
+			const removedRoles = oldMember.roles.cache.difference(newMember.roles.cache);
 
 			if(addedRoles.size > 0) await this.handleAddRoles(newMember, addedRoles);
 			if(removedRoles.size > 0) await this.handleRemoveRoles(newMember, removedRoles);
