@@ -35,6 +35,8 @@ class WelcomeListener extends BaseListener {
 	async handleAddRoles(member, roles) {
 		const roleId = roles.find(roleId => this.factionRoles.includes(roleId))
 
+		console.log(roleId);
+
 		if(!roleId) return;
 
 		await this.tryRefreshRoster(member);
