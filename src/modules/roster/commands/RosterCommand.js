@@ -1,4 +1,4 @@
-const { PermissionsBitField } = require("discord.js");
+const { PermissionsBitField, ApplicationCommandOptionType } = require("discord.js");
 
 const { refreshRoster } = require('../utils/RosterUtils');
 
@@ -8,12 +8,29 @@ const configManager = require('../../../config/ConfigManager');
 module.exports = {
 	name: 'roster',
 	description: 'Affiche le roster',
-	options: [],
+	options: [
+		{
+			name: "role",
+			description: "Définissez un role que l'utilisateur doit avoir",
+			type: ApplicationCommandOptionType.Role,
+			required: false
+		},
+		{
+			name: "here",
+			description: "Actualiser le roster dans ce salon",
+			type: ApplicationCommandOptionType.Boolean,
+			required: false
+}
+	],
 	run: async (client, interaction) => {
 
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
 			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
 		}
+
+		const optionalRole = interaction.options.getMember("role") ?? null;
+
+		const here = interaction.options.getMember("here") ?? false;
 
 		const roles = configManager.getConfigValue('roster.roles');
 
@@ -25,11 +42,11 @@ module.exports = {
 		try {
 			await interaction.guild.members.fetch();
 
-			const channel = configManager.getConfigValue('roster.channel')
+			const channel = !here && configManager.getConfigValue('roster.channel')
 				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
 				: interaction.channel;
 
-			await refreshRoster(channel, roles, interaction.guild.members.cache);
+			await refreshRoster(channel, roles, interaction.guild.members.cache, optionalRole);
 
 			return interaction.reply({ content: `Le roster a été actualisé dans le channel <#${channel.id}> avec succès !`, flags: 64});
 		} catch (e) {

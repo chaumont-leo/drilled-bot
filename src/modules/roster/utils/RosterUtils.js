@@ -1,5 +1,5 @@
 const {EmbedBuilder} = require("discord.js");
-const refreshRoster = async (channel, roles, guildMembers) => {
+const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) => {
 	try {
 
 		const fetched = await channel.messages.fetch({ limit: 100 });
@@ -9,9 +9,13 @@ const refreshRoster = async (channel, roles, guildMembers) => {
 			.map(role => {
 				return  {
 					id: role,
-					members: guildMembers
-						.filter(member => member.roles.cache.some(memberRole => memberRole.id === role))
-						.map(member => member.id)
+					members: guildMembers.reduce((members, member) => {
+						if(optionalRole && !member.roles.cache.some(memberRole => memberRole.id === optionalRole))
+							return members;
+						if(!member.roles.cache.some(memberRole => memberRole.id === role))
+							return members;
+						members.push(member.id)
+					}, [])
 				};
 			})
 			.reduce((acc, role) => {
@@ -32,7 +36,7 @@ const refreshRoster = async (channel, roles, guildMembers) => {
 
 		const embed = new EmbedBuilder()
 			.setColor('#ffffff')
-			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES**`)
+			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES${optionalRole ? ` (<@${optionalRole}>)`: ''}**`)
 			.setDescription(description);
 
 		return channel.send({embeds: [embed]});
