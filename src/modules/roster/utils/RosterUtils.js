@@ -10,7 +10,7 @@ const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) 
 				return  {
 					id: role,
 					members: guildMembers.reduce((members, member) => {
-						if(optionalRole && !member.roles.cache.some(memberRole => memberRole.id === optionalRole))
+						if(optionalRole && !member.roles.cache.some(memberRole => memberRole.id === optionalRole.id))
 							return members;
 						if(!member.roles.cache.some(memberRole => memberRole.id === role))
 							return members;
@@ -36,7 +36,7 @@ const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) 
 
 		const embed = new EmbedBuilder()
 			.setColor('#ffffff')
-			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES${optionalRole ? ` (<@&${optionalRole}>)`: ''}**`)
+			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES${optionalRole ? ` (<@&${optionalRole.id}>)`: ''}**`)
 			.setDescription(description);
 
 		return channel.send({embeds: [embed]});
