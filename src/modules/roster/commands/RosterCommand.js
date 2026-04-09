@@ -28,9 +28,9 @@ module.exports = {
 			return await interaction.reply({ content: 'Tu n’as pas la permission d’utiliser cette commande.', flags: 64 });
 		}
 
-		const optionalRole = interaction.options.getMember("role") ?? null;
+		const optionalRole = interaction.options.getRole("role") ?? null;
 
-		const here = interaction.options.getMember("here") ?? false;
+		const here = interaction.options.getBoolean("here") ?? false;
 
 		const roles = configManager.getConfigValue('roster.roles');
 
