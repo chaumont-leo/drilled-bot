@@ -15,6 +15,7 @@ const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) 
 						if(!member.roles.cache.some(memberRole => memberRole.id === role))
 							return members;
 						members.push(member.id)
+						return members;
 					}, [])
 				};
 			})
