@@ -37,7 +37,7 @@ const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) 
 
 		const embed = new EmbedBuilder()
 			.setColor('#ffffff')
-			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES${optionalRole ? ` - <@&${optionalRole.id}> `: ''}**`)
+			.setTitle(`:gem:︱**EFFECTIF ACTUEL – ${ rolesMembers.map(r => r.members).flat().length } MEMBRES${optionalRole ? ` - ${optionalRole.name} `: ''}**`)
 			.setDescription(description);
 
 		return channel.send({embeds: [embed]});
