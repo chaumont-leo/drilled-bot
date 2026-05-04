@@ -11,7 +11,8 @@ class WelcomeListener extends BaseListener {
 
 	handle() {
 		this.client.on('guildMemberAdd', async (member) => {
-			const attachments = ['logo', 'logoWithoutBg']
+
+			const attachments = this.getAttachments()
 				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}.png`)));
 
 			try {
@@ -40,6 +41,13 @@ class WelcomeListener extends BaseListener {
 				console.error(e);
 			}
 		})
+	}
+
+	getAttachments() {
+		const attachments = [];
+		this.checkAndSetIfActive('logoPath', (value) => { attachments.push(value); });
+		this.checkAndSetIfActive('footer.iconPath', (value) => { attachments.push(value); });
+		return attachments;
 	}
 
 	checkAndSetIfActive(property, cb) {
