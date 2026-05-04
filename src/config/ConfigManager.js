@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const _ = require('lodash');
 
 class ConfigManager {
 	config
@@ -13,7 +14,7 @@ class ConfigManager {
 	}
 
 	getConfigValue(valuePath) {
-		return this.config ? valuePath.split('.').reduce((acc, part) => acc?.[part], this.config) : null;
+		return this.config ? _.get(this.config, valuePath, null) : null;
 	}
 
 }
