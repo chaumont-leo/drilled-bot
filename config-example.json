@@ -7,7 +7,16 @@
         "channel": ""
     },
     "ticket": {
-        "channel": ""
+        "channel": "",
+        "channelEmbedMessage": {
+            "title": "Recrutement",
+            "content": "Pour créer un ticket, cliquez sur le bouton !",
+            "button": "Ouvrir un ticket"
+        },
+        "ticketEmbedMessage": {
+            "content": "Veuillez réutiliser la template de candidature \nBon courage !",
+            "button": "Fermer le ticket"
+        }
     },
     "roster": {
         "roleChangeChannel": "",

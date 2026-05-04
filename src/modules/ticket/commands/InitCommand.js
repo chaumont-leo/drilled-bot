@@ -1,5 +1,7 @@
 const {EmbedBuilder, ButtonBuilder, ActionRowBuilder, PermissionsBitField} = require("discord.js");
 
+const configManager = require('../../../config/ConfigManager');
+
 module.exports = {
 	name: 'init',
 	description: 'Génère le message pour les tickets',
@@ -10,12 +12,12 @@ module.exports = {
 		}
 		const embed = new EmbedBuilder()
 			.setColor('#ffffff')
-			.setTitle('Recrutement')
-			.setDescription('Pour créer un ticket, cliquez sur le bouton !');
+			.setTitle(configManager.getConfigValue('ticket.channelEmbedMessage.title'))
+			.setDescription(configManager.getConfigValue('ticket.channelEmbedMessage.content'));
 
 		const button = new ButtonBuilder()
 			.setCustomId('create_ticket')
-			.setLabel('Ouvrir un ticket')
+			.setLabel(configManager.getConfigValue('ticket.channelEmbedMessage.button'))
 			.setStyle(1);
 
 		const row = new ActionRowBuilder()

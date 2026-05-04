@@ -34,11 +34,11 @@ module.exports = {
 
 			const embed = new EmbedBuilder()
 				.setColor('#ffffff')
-				.setDescription('Veuillez réutiliser la template de candidature \nBon courage !');
+				.setDescription(configManager.getConfigValue('ticket.ticketEmbedMessage.content'));
 
 			const button = new ButtonBuilder()
 				.setCustomId('close_ticket')
-				.setLabel('Fermer le ticket')
+				.setLabel(configManager.getConfigValue('ticket.ticketEmbedMessage.button'))
 				.setStyle(4);
 
 			const row = new ActionRowBuilder()
