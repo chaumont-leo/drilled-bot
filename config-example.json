@@ -4,7 +4,21 @@
     },
     "welcome": {
         "baseRole": "",
-        "channel": ""
+        "channel": "",
+        "embedMessage": {
+            "title": "Bienvenue",
+            "color": "#ffffff",
+            "description": "Bienvenue %member% ! #%count% \\n Si tu souhaites être recruté ouvre un ticket \\n %ticketChannel%",
+            "thumbnail": "LOGO", // Available : LOGO
+            "logoPath": "logo.png", // Use if thumbnail is set to LOGO
+            "footer": {
+                "active": true,
+                "icon": true,
+                "iconPath": "logoWithoutBg.png",
+                "text": "",
+                "timestamp": true
+            }
+        }
     },
     "ticket": {
         "channel": "",
