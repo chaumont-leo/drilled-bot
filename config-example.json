@@ -1,8 +1,6 @@
 {
-    "support": {
-        "role": ""
-    },
     "welcome": {
+        "active": true,
         "baseRole": "",
         "channel": "",
         "embedMessage": {
@@ -21,6 +19,7 @@
         }
     },
     "ticket": {
+        "active": true,
         "channel": "",
         "supportRole": "",
         "channelEmbedMessage": {
@@ -34,8 +33,18 @@
         }
     },
     "roster": {
+        "active": true,
+        "fullRoster": {
+            "active": true,
+            "channel": ""
+        },
+        "specificRosters": [
+            {
+                "role": "",
+                "channel": ""
+            }
+        ],
         "roleChangeChannel": "",
-        "channel": "",
         "roles": []
     }
 }

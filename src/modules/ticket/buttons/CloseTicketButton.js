@@ -1,6 +1,8 @@
 const {ButtonBuilder, ActionRowBuilder} = require("discord.js");
+const configManager = require("../../../config/ConfigManager");
 module.exports = {
 	id: 'close_ticket',
+	active: configManager.getConfigValue('ticket.active'),
 	run: async (client, interaction) => {
 		const message = await interaction.message;
 		const oldButton = message.components[0].components[0];

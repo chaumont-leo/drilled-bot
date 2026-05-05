@@ -64,21 +64,22 @@ class Handler {
 	handleListeners(folderPath) {
 		fs.readdirSync(folderPath).forEach((moduleDir) => {
 			const Module = require(path.join(folderPath, moduleDir));
-			(new Module(this.client)).handle();
+			const instance = new Module(this.client);
+			if(instance.active) instance.handle();
 		});
 	}
 
 	async handleCommands(folderPath) {
 		for (const commandFile of fs.readdirSync(folderPath)) {
 			const command = require(path.join(folderPath, commandFile));
-			if(command?.name) await this.client.commands.set(command.name, command);
+			if(command?.name && command?.active) await this.client.commands.set(command.name, command);
 		}
 	}
 
 	handleButtons(folderPath) {
 		fs.readdirSync(folderPath).forEach((buttonFile) => {
 			const button = require(path.join(folderPath, buttonFile));
-			this.buttonHandlers.push(button);
+			if(button.active) this.buttonHandlers.push(button);
 		});
 	}
 }

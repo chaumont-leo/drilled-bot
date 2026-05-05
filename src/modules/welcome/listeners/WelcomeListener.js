@@ -7,6 +7,7 @@ const configManager = require('../../../config/ConfigManager');
 class WelcomeListener extends BaseListener {
 	constructor(client) {
 		super(client);
+		this.active = configManager.getConfigValue('welcome.active');
 	}
 
 	handle() {

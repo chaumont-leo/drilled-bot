@@ -3,6 +3,7 @@ const configManager = require('../../../config/ConfigManager');
 
 module.exports = {
 	id: 'create_ticket',
+	active: configManager.getConfigValue('ticket.active'),
 	run: async (client, interaction) => {
 		const member = interaction.member;
 		try {

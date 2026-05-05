@@ -7,6 +7,7 @@ const { refreshRoster } = require('../utils/RosterUtils');
 class WelcomeListener extends BaseListener {
 	constructor(client) {
 		super(client);
+		this.active = configManager.getConfigValue('roster.active');
 		this.factionRoles = configManager.getConfigValue('roster.roles');
 		this.factionRoleChannelId = configManager.getConfigValue('roster.roleChangeChannel');
 	}

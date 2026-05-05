@@ -5,6 +5,7 @@ const configManager = require('../../../config/ConfigManager');
 module.exports = {
 	name: 'init',
 	description: 'Génère le message pour les tickets',
+	active: configManager.getConfigValue('ticket.active'),
 	options: [],
 	run: async (client, interaction) => {
 		if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {

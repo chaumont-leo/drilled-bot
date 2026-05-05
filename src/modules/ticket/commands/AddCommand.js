@@ -4,6 +4,7 @@ const configManager = require('../../../config/ConfigManager');
 module.exports = {
 	name: 'add',
 	description: 'Ajoute un user au ticket',
+	active: configManager.getConfigValue('ticket.active'),
 	options: [
 		{
 			name: "utilisateur",

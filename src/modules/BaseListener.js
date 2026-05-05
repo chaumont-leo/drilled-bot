@@ -4,6 +4,7 @@ class BaseListener {
 	 */
 	constructor(client) {
 		this.client = client;
+		this.active = true;
 	}
 
 	handle() {

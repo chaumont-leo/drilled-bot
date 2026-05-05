@@ -1,7 +1,6 @@
 const {EmbedBuilder} = require("discord.js");
 const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) => {
 	try {
-
 		const fetched = await channel.messages.fetch({ limit: 100 });
 		await channel.bulkDelete(fetched);
 

@@ -1,9 +1,12 @@
 const { ApplicationCommandOptionType } = require("discord.js");
 const configManager = require('../../../config/ConfigManager');
 
+
+
 module.exports = {
 	name: 'remove',
 	description: 'Retire un user du ticket',
+	active: configManager.getConfigValue('ticket.active'),
 	options: [
 		{
 			name: "utilisateur",

@@ -8,6 +8,7 @@ const configManager = require('../../../config/ConfigManager');
 module.exports = {
 	name: 'roster',
 	description: 'Affiche le roster',
+	active: configManager.getConfigValue('roster.active'),
 	options: [
 		{
 			name: "role",
