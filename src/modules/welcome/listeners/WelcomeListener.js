@@ -13,7 +13,7 @@ class WelcomeListener extends BaseListener {
 		this.client.on('guildMemberAdd', async (member) => {
 
 			const attachments = this.getAttachments()
-				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}.png`)));
+				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}`)));
 
 			try {
 				const channel = configManager.getConfigValue('welcome.channel')
