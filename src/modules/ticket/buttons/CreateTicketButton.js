@@ -20,7 +20,7 @@ module.exports = {
 							PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory],
 					},
 					{
-						id: configManager.getConfigValue('support.role'),
+						id: configManager.getConfigValue('ticket.supportRole'),
 						allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
 							PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory],
 					},
