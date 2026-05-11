@@ -47,10 +47,10 @@ class WelcomeListener extends BaseListener {
 	}
 
 	getAttachments() {
-		const attachments = [];
-		this.checkAndSetIfActive('logoPath', (value) => { attachments.push(value); });
-		this.checkAndSetIfActive('footer.iconPath', (value) => { attachments.push(value); });
-		return attachments;
+		const attachments = new Set();
+		this.checkAndSetIfActive('logoPath', (value) => { attachments.add(value); });
+		this.checkAndSetIfActive('footer.iconPath', (value) => { attachments.add(value); });
+		return Array.from(attachments);
 	}
 
 	checkAndSetIfActive(property, cb) {
