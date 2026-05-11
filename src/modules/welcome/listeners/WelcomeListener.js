@@ -13,6 +13,8 @@ class WelcomeListener extends BaseListener {
 	handle() {
 		this.client.on('guildMemberAdd', async (member) => {
 
+			console.log('join');
+
 			const attachments = this.getAttachments()
 				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}`)));
 
@@ -75,7 +77,7 @@ class WelcomeListener extends BaseListener {
 			const footer = {};
 
 			const icon = configManager.getConfigValue('welcome.embedMessage.footer.icon');
-			const iconPath = configManager.getConfigValue('welcome.embedMessage.footer.icon');
+			const iconPath = configManager.getConfigValue('welcome.embedMessage.footer.iconPath');
 			if(icon && iconPath) footer.iconURL = `attachment://${iconPath}`;
 
 			const text = configManager.getConfigValue('welcome.embedMessage.footer.text');
