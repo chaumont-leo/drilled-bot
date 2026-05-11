@@ -28,7 +28,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 
 		const specificRosters = configManager.getConfigValue('roster.specificRosters');
 
-		rosters.push(...specificRosters.map(async (roster) => {
+		rosters.push(...(await Promise.all(specificRosters.map(async (roster) => {
 			const [role, channel] = await Promise.all([
 				guild.roles.fetch(roster.role),
 				guild.channels.fetch(roster.channel)
@@ -38,7 +38,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 
 			const filteredRoster = filterRoster(baseRoster, roster.role);
 			return { roster: filteredRoster, role, channel };
-		}));
+		}))));
 
 		await Promise.all(channels.map(channel => clearChannel(channel)));
 
