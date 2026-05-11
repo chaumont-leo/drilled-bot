@@ -22,6 +22,7 @@
         "active": true,
         "channel": "",
         "supportRole": "",
+        "categoryId": "",
         "channelEmbedMessage": {
             "title": "Recrutement",
             "content": "Pour créer un ticket, cliquez sur le bouton !",

@@ -1,13 +1,15 @@
 const { PermissionFlagsBits, ChannelType, ButtonBuilder, ActionRowBuilder, EmbedBuilder } = require('discord.js')
 const configManager = require('../../../config/ConfigManager');
 
+const ticketConfig = configManager.getConfigValue('ticket');
+
 module.exports = {
 	id: 'create_ticket',
-	active: configManager.getConfigValue('ticket.active'),
+	active: ticketConfig.active,
 	run: async (client, interaction) => {
 		const member = interaction.member;
 		try {
-			const channel = await interaction.guild.channels.create({
+			const channelConfig = {
 				name: `ticket-${member?.user.globalName}`,
 				type: ChannelType.GuildText,
 				permissionOverwrites: [
@@ -31,7 +33,11 @@ module.exports = {
 							PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory],
 					}
 				],
-			})
+			}
+
+			if(ticketConfig.categoryId) channelConfig.parent = ticketConfig.categoryId;
+
+			const channel = await interaction.guild.channels.create(channelConfig)
 
 			const embed = new EmbedBuilder()
 				.setColor('#ffffff')
@@ -45,8 +51,8 @@ module.exports = {
 			const row = new ActionRowBuilder()
 				.addComponents(button);
 
-			if(configManager.getConfigValue('ticket.ticketForm')) {
-				await channel.send("```\n" + configManager.getConfigValue('ticket.ticketForm') + "\n```");
+			if(ticketConfig.ticketForm) {
+				await channel.send("```\n" + ticketConfig.ticketForm + "\n```");
 			}
 
 			await channel.send({embeds: [embed], components: [row]});
