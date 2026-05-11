@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 
 const BaseListener = require('../../BaseListener');
 const configManager = require('../../../config/ConfigManager');
-const { refreshRoster } = require('../utils/RosterUtils');
+const { refreshRosters } = require('../utils/RosterUtils');
 
 class WelcomeListener extends BaseListener {
 	constructor(client) {
@@ -80,11 +80,8 @@ class WelcomeListener extends BaseListener {
 
 	async tryRefreshRoster(member) {
 		try {
-			const rosterChannelId = configManager.getConfigValue('roster.channel');
-			if(!rosterChannelId) return;
-			const channel = await member.guild.channels.fetch(rosterChannelId);
 			await member.guild.members.fetch();
-			await refreshRoster(channel, this.factionRoles, member.guild.members.cache);
+			await refreshRosters(member.guild, this.factionRoles);
 		} catch (e) {
 			console.error(e);
 		}

@@ -1,31 +1,50 @@
 const {EmbedBuilder} = require("discord.js");
 const configManager = require('../../../config/ConfigManager');
 
-const refreshRoster = async (channel, roles, guildMembers, optionalRole = null) => {
+const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole = null) => {
 	try {
-		const fetched = await channel.messages.fetch({ limit: 100 });
-		await channel.bulkDelete(fetched);
+		const baseRoster = getBaseRoster(guild.members, roles);
 
-		const baseRoster = getBaseRoster(guildMembers, roles);
-
-		if(optionalRole) {
-			const roster = filterRoster(baseRoster, guildMembers, optionalRole.id);
+		if(optionalRole && optionalChannel) {
+			const roster = filterRoster(baseRoster, optionalRole.id);
 			const embed = formatEmbed(roster, optionalRole.name)
-			return channel.send({embeds: [embed]});
+
+			await clearChannel(optionalChannel)
+
+			return optionalChannel.send({embeds: [embed]});
 		}
 
 		const rosters = [];
 
-		const fullRoster = configManager.getConfigValue('roster.fullRoster.active');
+		const channels = [];
 
-		if(fullRoster)
-			rosters.push({ roster: fullRoster, role: null });
+		const fullRoster = configManager.getConfigValue('roster.fullRoster');
+
+		if(fullRoster.active) {
+			const channel = await guild.channels.fetch(fullRoster.channel);
+			channels.push(channel);
+			rosters.push({ roster: fullRoster, role: null, channel });
+		}
 
 		const specificRosters = configManager.getConfigValue('roster.specificRosters');
 
+		rosters.push(...specificRosters.map(async (roster) => {
+			const [role, channel] = await Promise.all([
+				guild.roles.fetch(roster.role),
+				guild.channels.fetch(roster.channel)
+			]);
 
+			if(!channels.map(chan => chan.id).includes(roster.id)) channels.push(channel);
 
-		return channel.send({embeds: [embed]});
+			const filteredRoster = filterRoster(baseRoster, roster.role);
+			return { roster: filteredRoster, role, channel };
+		}));
+
+		await Promise.all(channels.map(channel => clearChannel(channel)));
+
+		for (const roster of rosters) {
+			roster.channel.send({ embeds: [formatEmbed(roster.roster, roster.name ?? null)] })
+		}
 	} catch (e) {
 		console.error(e);
 		throw e;
@@ -79,6 +98,15 @@ const formatEmbed = (roster, roleName = null) => {
 		.setDescription(formatDescription(roster));
 }
 
+const clearChannel = async (channel) => {
+	try {
+		const fetched = await channel.messages.fetch({ limit: 100 });
+		await channel.bulkDelete(fetched);
+	} catch (e) {
+		console.error(e);
+	}
+}
+
 module.exports = {
-	refreshRoster
+	refreshRosters
 }

@@ -1,6 +1,6 @@
 const { PermissionsBitField, ApplicationCommandOptionType } = require("discord.js");
 
-const { refreshRoster } = require('../utils/RosterUtils');
+const { refreshRosters } = require('../utils/RosterUtils');
 
 const configManager = require('../../../config/ConfigManager');
 
@@ -47,7 +47,7 @@ module.exports = {
 				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
 				: interaction.channel;
 
-			await refreshRoster(channel, roles, interaction.guild.members.cache, optionalRole);
+			await refreshRosters(interaction.guild, roles, channel, optionalRole);
 
 			return interaction.reply({ content: `Le roster a été actualisé dans le channel <#${channel.id}> avec succès !`, flags: 64});
 		} catch (e) {
