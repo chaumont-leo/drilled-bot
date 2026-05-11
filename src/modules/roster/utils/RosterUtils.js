@@ -23,7 +23,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 		if(fullRoster.active) {
 			const channel = await guild.channels.fetch(fullRoster.channel);
 			channels.push(channel);
-			rosters.push({ roster: fullRoster, role: null, channel });
+			rosters.push({ roster: baseRoster, role: null, channel });
 		}
 
 		const specificRosters = configManager.getConfigValue('roster.specificRosters');
