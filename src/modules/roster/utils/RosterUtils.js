@@ -43,7 +43,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 		await Promise.all(channels.map(channel => clearChannel(channel)));
 
 		for (const roster of rosters) {
-			roster.channel.send({ embeds: [formatEmbed(roster.roster, roster.name ?? null)] })
+			roster.channel.send({ embeds: [formatEmbed(roster.roster, roster.role.name ?? null)] })
 		}
 	} catch (e) {
 		console.error(e);
