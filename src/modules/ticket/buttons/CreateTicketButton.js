@@ -45,6 +45,10 @@ module.exports = {
 			const row = new ActionRowBuilder()
 				.addComponents(button);
 
+			if(configManager.getConfigValue('ticket.ticketForm')) {
+				await channel.send("```\n" + configManager.getConfigValue('ticket.ticketForm') + "\n```");
+			}
+
 			await channel.send({embeds: [embed], components: [row]});
 			return interaction.reply({content: `Ticket créé : <#${channel.id}>`, flags: 64});
 		} catch (err) {

@@ -27,6 +27,7 @@
             "content": "Pour créer un ticket, cliquez sur le bouton !",
             "button": "Ouvrir un ticket"
         },
+        "ticketForm": "",
         "ticketEmbedMessage": {
             "content": "Veuillez réutiliser la template de candidature \nBon courage !",
             "button": "Fermer le ticket"
