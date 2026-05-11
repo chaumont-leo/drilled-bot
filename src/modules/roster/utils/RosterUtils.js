@@ -3,7 +3,7 @@ const configManager = require('../../../config/ConfigManager');
 
 const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole = null) => {
 	try {
-		const baseRoster = getBaseRoster(guild.members, roles);
+		const baseRoster = getBaseRoster(guild.members.cache, roles);
 
 		if(optionalRole && optionalChannel) {
 			const roster = filterRoster(baseRoster, optionalRole.id);
@@ -21,7 +21,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 		const fullRoster = configManager.getConfigValue('roster.fullRoster');
 
 		if(fullRoster.active) {
-			const channel = await guild.channels.fetch(fullRoster.channel);
+			const channel = await guild.channels.cache.fetch(fullRoster.channel);
 			channels.push(channel);
 			rosters.push({ roster: fullRoster, role: null, channel });
 		}
@@ -30,8 +30,8 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 
 		rosters.push(...specificRosters.map(async (roster) => {
 			const [role, channel] = await Promise.all([
-				guild.roles.fetch(roster.role),
-				guild.channels.fetch(roster.channel)
+				guild.roles.cache.fetch(roster.role),
+				guild.channels.cache.fetch(roster.channel)
 			]);
 
 			if(!channels.map(chan => chan.id).includes(roster.id)) channels.push(channel);
