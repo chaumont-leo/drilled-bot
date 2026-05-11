@@ -21,7 +21,7 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 		const fullRoster = configManager.getConfigValue('roster.fullRoster');
 
 		if(fullRoster.active) {
-			const channel = await guild.channels.cache.fetch(fullRoster.channel);
+			const channel = await guild.channels.fetch(fullRoster.channel);
 			channels.push(channel);
 			rosters.push({ roster: fullRoster, role: null, channel });
 		}
@@ -30,8 +30,8 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 
 		rosters.push(...specificRosters.map(async (roster) => {
 			const [role, channel] = await Promise.all([
-				guild.roles.cache.fetch(roster.role),
-				guild.channels.cache.fetch(roster.channel)
+				guild.roles.fetch(roster.role),
+				guild.channels.fetch(roster.channel)
 			]);
 
 			if(!channels.map(chan => chan.id).includes(roster.id)) channels.push(channel);
@@ -60,14 +60,14 @@ const getBaseRoster = (guildMembers, roles) => {
 				members: guildMembers.reduce((members, member) => {
 					if (!member.roles.cache.some(memberRole => memberRole.id === role))
 						return members;
-					members.push(member.id)
+					members.push(member)
 					return members;
 				}, [])
 			};
 		}).reduce((acc, role) => {
-			const members = role.members.filter(member => !acc.seen.some(id => id === member));
+			const members = role.members.filter(member => !acc.seen.some(id => id === member.id));
 			acc.roles.push({id: role.id, members: members});
-			acc.seen.push(...members);
+			acc.seen.push(...members.map(member => member.id));
 			return acc;
 		}, { roles: [], seen: [] })
 		.roles;
@@ -85,7 +85,7 @@ const formatDescription = (roster) => {
 	return roster.map(roleMember => {
 		const roleTitle = `<@&${roleMember.id}> [${roleMember.members.length}] \n`;
 		const roleList = roleMember.members.length > 0
-			? roleMember.members.map(member => `\n• <@${member}>`).join('')
+			? roleMember.members.map(member => `\n• <@${member.id}>`).join('')
 			: '\n• À venir...';
 		return roleTitle + roleList
 	}).join('\n\n')
