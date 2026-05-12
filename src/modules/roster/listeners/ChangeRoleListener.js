@@ -32,13 +32,13 @@ class WelcomeListener extends BaseListener {
 
 			const oldHighestRosterRoleIndex = Array.from(oldRoleIds).reduce((acc, roleId) => {
 				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
-				if(rosterRoleIndex !== -1 && rosterRoleIndex < acc) acc = rosterRoleIndex;
+				if(rosterRoleIndex !== -1 && (rosterRoleIndex < acc || acc === -1)) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
 
 			const newHighestRosterRoleIndex = Array.from(newRoleIds).reduce((acc, roleId) => {
 				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
-				if(rosterRoleIndex !== -1 && rosterRoleIndex < acc) acc = rosterRoleIndex;
+				if(rosterRoleIndex !== -1&& (rosterRoleIndex < acc || acc === -1)) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
 
