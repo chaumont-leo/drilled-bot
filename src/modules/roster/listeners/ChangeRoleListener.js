@@ -30,13 +30,13 @@ class WelcomeListener extends BaseListener {
 			const oldRosterMember = Array.from(oldRoleIds).some(id => this.rosterRoles.includes(id));
 			const newRosterMember = Array.from(newRoleIds).some(id => this.rosterRoles.includes(id));
 
-			const oldHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
+			const oldHighestRosterRoleIndex = Array.from(oldRoleIds).reduce((acc, roleId) => {
 				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
 				if(rosterRoleIndex !== -1 && rosterRoleIndex < acc) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
 
-			const newHighestRosterRoleId = Array.from(newRoleIds).reduce((acc, roleId) => {
+			const newHighestRosterRoleIndex = Array.from(newRoleIds).reduce((acc, roleId) => {
 				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
 				if(rosterRoleIndex !== -1 && rosterRoleIndex < acc) acc = rosterRoleIndex;
 				return acc;
@@ -46,8 +46,8 @@ class WelcomeListener extends BaseListener {
 				await this.sendMessage('quitMessage', newMember)
 			} else if(!oldRosterMember && newRosterMember) {
 				await this.sendMessage('joinMessage', newMember)
-			} else if(newHighestRosterRoleId > oldHighestRosterRoleId) {
-				await this.sendMessage('promotionMessage', newHighestRosterRoleId, newHighestRosterRoleId);
+			} else if(newHighestRosterRoleIndex < oldHighestRosterRoleIndex) {
+				await this.sendMessage('promotionMessage', newMember, this.rosterRoles[newHighestRosterRoleIndex]);
 			}
 
 		})
