@@ -36,9 +36,8 @@ class WelcomeListener extends BaseListener {
 				return acc;
 			}, -1);
 
-			const newHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
+			const newHighestRosterRoleId = Array.from(newRoleIds).reduce((acc, roleId) => {
 				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
-				console.log(rosterRoleIndex);
 				if(rosterRoleIndex > acc) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
