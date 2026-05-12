@@ -31,13 +31,14 @@ class WelcomeListener extends BaseListener {
 			const newRosterMember = Array.from(newRoleIds).some(id => this.rosterRoles.includes(id));
 
 			const oldHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
-				const rosterRoleIndex = this.rosterRoles.findIndex(roleId);
+				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
 				if(rosterRoleIndex > acc) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
 
 			const newHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
-				const rosterRoleIndex = this.rosterRoles.findIndex(roleId);
+				const rosterRoleIndex = this.rosterRoles.findIndex(rId => rId === roleId);
+				console.log(rosterRoleIndex);
 				if(rosterRoleIndex > acc) acc = rosterRoleIndex;
 				return acc;
 			}, -1);
@@ -56,10 +57,10 @@ class WelcomeListener extends BaseListener {
 	async tryRefreshRoster(member) {
 		try {
 			await member.guild.members.fetch();
-			await refreshRosters(member.guild, this.rosterRoles);
 		} catch (e) {
 			console.error(e);
 		}
+		await refreshRosters(member.guild, this.rosterRoles);
 	}
 
 	async sendMessage(eventId, member, roleId = null) {
