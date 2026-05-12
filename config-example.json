@@ -46,6 +46,25 @@
                 "channel": ""
             }
         ],
+        "roleChange": {
+            "active": true,
+            "channel": "",
+            "joinMessage": {
+                "title": "**Début d'une aventure**",
+                "content": "Souhaitez la bienvenue à %member% au sein des rangs de la Drilled !",
+                "color": "#ffffff"
+            },
+            "quitMessage": {
+                "title": "**Fin d'une aventure**",
+                "content": "Le joueur %member% ne fait désormais plus partie de la Drilled !",
+                "color": "#ffffff"
+            },
+            "promotionMessage": {
+                "title": "**Une promotion**",
+                "content": "Le joueur %member% est désormais promu au rang de %role% ! \n Félicitations pour cette promotion !",
+                "color": "#ffffff"
+            }
+        },
         "roleChangeChannel": "",
         "roles": []
     }

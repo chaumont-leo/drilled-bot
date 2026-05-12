@@ -8,14 +8,14 @@ class WelcomeListener extends BaseListener {
 	constructor(client) {
 		super(client);
 		this.active = configManager.getConfigValue('roster.active');
-		this.factionRoles = configManager.getConfigValue('roster.roles');
-		this.factionRoleChannelId = configManager.getConfigValue('roster.roleChangeChannel');
+		this.rosterRoles = this.getRosterRoles();
+		this.roles = [...this.rosterRoles, ...this.getSpecificRoles()];
 	}
 
 	handle() {
 		this.client.on('guildMemberUpdate', async (oldMember, newMember) => {
 
-			if(!this.factionRoles || this.factionRoles.length === 0) return;
+			if(this.roles.length === 0) return;
 
 			const oldRoleIds = new Set(oldMember.roles.cache.map(r => r.id));
 			const newRoleIds = new Set(newMember.roles.cache.map(r => r.id));
@@ -23,27 +23,55 @@ class WelcomeListener extends BaseListener {
 			const addedRoles = [...newRoleIds].filter(id => !oldRoleIds.has(id));
 			const removedRoles = [...oldRoleIds].filter(id => !newRoleIds.has(id));
 
-			if(addedRoles.length > 0) await this.handleAddRoles(newMember, addedRoles);
-			if(removedRoles.length > 0) await this.handleRemoveRoles(newMember, removedRoles);
+			if([...addedRoles, ...removedRoles].filter(id => this.roles.includes(id)).length === 0) return;
+
+			await this.tryRefreshRoster(newMember);
+
+			const oldRosterMember = Array.from(oldRoleIds).some(id => this.rosterRoles.includes(id));
+			const newRosterMember = Array.from(newRoleIds).some(id => this.rosterRoles.includes(id));
+
+			const oldHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
+				const rosterRoleIndex = this.rosterRoles.findIndex(roleId);
+				if(rosterRoleIndex > acc) acc = rosterRoleIndex;
+				return acc;
+			}, -1);
+
+			const newHighestRosterRoleId = Array.from(oldRoleIds).reduce((acc, roleId) => {
+				const rosterRoleIndex = this.rosterRoles.findIndex(roleId);
+				if(rosterRoleIndex > acc) acc = rosterRoleIndex;
+				return acc;
+			}, -1);
+
+			if(oldRosterMember && !newRosterMember) {
+				await this.sendMessage('quitMessage', newMember)
+			} else if(!oldRosterMember && newRosterMember) {
+				await this.sendMessage('joinMessage', newMember)
+			} else if(newHighestRosterRoleId > oldHighestRosterRoleId) {
+				await this.sendMessage('promotionMessage', newHighestRosterRoleId, newHighestRosterRoleId);
+			}
 
 		})
 	}
 
-	async handleAddRoles(member, roles) {
-		const roleId = roles.find(roleId => this.factionRoles.includes(roleId))
+	async tryRefreshRoster(member) {
+		try {
+			await member.guild.members.fetch();
+			await refreshRosters(member.guild, this.rosterRoles);
+		} catch (e) {
+			console.error(e);
+		}
+	}
 
-		if(!roleId) return;
-
-		await this.tryRefreshRoster(member);
-
-		if(!this.factionRoleChannelId) return;
+	async sendMessage(eventId, member, roleId = null) {
+		const roleChangeConfig = configManager.getConfigValue('roster.roleChange');
+		if(!roleChangeConfig.active || !roleChangeConfig.channel || !roleChangeConfig[eventId]) return;
 
 		try {
-			const factionRoleChannel = await member.guild.channels.fetch(this.factionRoleChannelId);
+			const factionRoleChannel = await member.guild.channels.fetch(roleChangeConfig.channel);
 			const embed = new EmbedBuilder()
-				.setTitle('**Une promotion**')
-				.setColor('#ffffff') // Vous pouvez définir des couleurs avec des chaînes de caractères hexadécimales, des nombres ou des strings prédéfinis
-				.setDescription(`Le joueur ${member} est désormais promu au rang de <@&${roleId}> ! \n Félicitations pour cette promotion !`)
+				.setTitle(roleChangeConfig[eventId].title)
+				.setColor(roleChangeConfig[eventId].color ?? '#ffffff')
+				.setDescription(this.formatDescription(roleChangeConfig[eventId].description, member, roleId))
 				.setTimestamp();
 			await factionRoleChannel.send({ embeds: [embed] });
 		} catch (e) {
@@ -51,40 +79,23 @@ class WelcomeListener extends BaseListener {
 		}
 	}
 
-	async handleRemoveRoles(member, roles) {
-		const roleId = roles.find(roleId => this.factionRoles.includes(roleId))
-
-		if(!roleId) return;
-
-		await this.tryRefreshRoster(member);
-
-		if(!this.factionRoleChannelId) return;
-
-		if(!member.roles.cache
-			.map(role => role.id)
-			.some(roleId => this.factionRoles.includes(roleId))) {
-			try {
-				const factionRoleChannel = await member.guild.channels.fetch(this.factionRoleChannelId);
-				const embed = new EmbedBuilder()
-					.setTitle('**Fin d\'une aventure**')
-					.setColor('#ffffff') // Vous pouvez définir des couleurs avec des chaînes de caractères hexadécimales, des nombres ou des strings prédéfinis
-					.setDescription(`Le joueur ${member} ne fait désormais plus partie de la Drilled !`)
-					.setTimestamp();
-				await factionRoleChannel.send({ embeds: [embed] });
-			} catch (e) {
-				console.error(e);
-			}
-		}
+	formatDescription(rawDescription, member, roleId) {
+		const description = rawDescription
+			.replaceAll('%member%', `${member}`)
+		return roleId
+			? description.replaceAll('%role%', `<@&${roleId}>`)
+			: description;
 	}
 
+	getRosterRoles() {
+		return configManager.getConfigValue('roster.roles') ?? [];
+	}
 
-	async tryRefreshRoster(member) {
-		try {
-			await member.guild.members.fetch();
-			await refreshRosters(member.guild, this.factionRoles);
-		} catch (e) {
-			console.error(e);
-		}
+	getSpecificRoles() {
+		const specificRosters = configManager.getConfigValue('roster.specificRosters');
+		return Array.isArray(specificRosters) && specificRosters.length > 0
+			? specificRosters.map(specificRoster => specificRoster.role)
+			: [];
 	}
 }
 
