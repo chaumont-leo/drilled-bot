@@ -13,8 +13,6 @@ class WelcomeListener extends BaseListener {
 	handle() {
 		this.client.on('guildMemberAdd', async (member) => {
 
-			console.log('join');
-
 			const attachments = this.getAttachments()
 				.map(attachment => new AttachmentBuilder(join(__dirname, `../../../assets/${attachment}`)));
 
