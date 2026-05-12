@@ -67,7 +67,7 @@ class WelcomeListener extends BaseListener {
 		if(!roleChangeConfig.active || !roleChangeConfig.channel || !roleChangeConfig[eventId]) return;
 
 		try {
-			const factionRoleChannel = await member.guild.channels.fetch(roleChangeConfig.channel);
+			const factionRoleChannel = await member.guild.channels.cache.get(roleChangeConfig.channel);
 			const embed = new EmbedBuilder()
 				.setTitle(roleChangeConfig[eventId].title)
 				.setColor(roleChangeConfig[eventId].color ?? '#ffffff')
