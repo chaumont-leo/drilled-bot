@@ -1,7 +1,7 @@
 const {EmbedBuilder} = require("discord.js");
 const configManager = require('../../../config/ConfigManager');
 
-const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole = null) => {
+const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole = null, onlyBaseRoster = false) => {
 	try {
 		const baseRoster = getBaseRoster(guild.members.cache, roles);
 
@@ -23,22 +23,24 @@ const refreshRosters = async (guild, roles, optionalChannel = null, optionalRole
 		if(fullRoster.active) {
 			const channel = await guild.channels.cache.get(fullRoster.channel);
 			channels.push(channel);
-			rosters.push({ roster: baseRoster, role: null, channel });
+			rosters.push({ roster: baseRoster, role: null, channel: optionalChannel ?? channel });
 		}
 
-		const specificRosters = configManager.getConfigValue('roster.specificRosters');
+		if(!onlyBaseRoster) {
+			const specificRosters = configManager.getConfigValue('roster.specificRosters');
 
-		rosters.push(...(await Promise.all(specificRosters.map(async (roster) => {
-			const [role, channel] = await Promise.all([
-				guild.roles.cache.get(roster.role),
-				guild.channels.cache.get(roster.channel)
-			]);
+			rosters.push(...(await Promise.all(specificRosters.map(async (roster) => {
+				const [role, channel] = await Promise.all([
+					guild.roles.cache.get(roster.role),
+					guild.channels.cache.get(roster.channel)
+				]);
 
-			if(!channels.map(chan => chan.id).includes(roster.id)) channels.push(channel);
+				if(!channels.map(chan => chan.id).includes(roster.id)) channels.push(channel);
 
-			const filteredRoster = filterRoster(baseRoster, roster.role);
-			return { roster: filteredRoster, role, channel };
-		}))));
+				const filteredRoster = filterRoster(baseRoster, roster.role);
+				return { roster: filteredRoster, role, channel: optionalChannel ?? channel };
+			}))));
+		}
 
 		await Promise.all(channels.map(channel => clearChannel(channel)));
 

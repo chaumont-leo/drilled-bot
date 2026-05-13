@@ -17,6 +17,12 @@ module.exports = {
 			required: false
 		},
 		{
+			name: "onlyBaseRoster",
+			description: "Choisissez d'afficher uniquement le roster de base",
+			type: ApplicationCommandOptionType.Boolean,
+			required: false
+		},
+		{
 			name: "here",
 			description: "Actualiser le roster dans ce salon",
 			type: ApplicationCommandOptionType.Boolean,
@@ -33,6 +39,8 @@ module.exports = {
 
 		const here = interaction.options.getBoolean("here") ?? false;
 
+		const onlyBaseRoster = interaction.options.getBoolean("onlyBaseRoster") ?? false;
+
 		const roles = configManager.getConfigValue('roster.roles');
 
 		if(!roles || roles.length === 0) return interaction.reply({
@@ -42,14 +50,15 @@ module.exports = {
 
 		try {
 			await interaction.guild.members.fetch();
+		} catch (e) {
+			console.error(e);
+		}
+		try {
+			const channel = here ? interaction.channel : null;
 
-			const channel = !here && configManager.getConfigValue('roster.channel')
-				? await interaction.guild.channels.fetch(configManager.getConfigValue('roster.channel'))
-				: interaction.channel;
+			await refreshRosters(interaction.guild, roles, channel, optionalRole, onlyBaseRoster);
 
-			await refreshRosters(interaction.guild, roles, channel, optionalRole);
-
-			return interaction.reply({ content: `Le roster a été actualisé dans le channel <#${channel.id}> avec succès !`, flags: 64});
+			return interaction.reply({ content: `Le roster a été actualisé avec succès !`, flags: 64});
 		} catch (e) {
 			console.error(e);
 			return interaction.reply({
