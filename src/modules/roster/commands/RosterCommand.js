@@ -17,7 +17,7 @@ module.exports = {
 			required: false
 		},
 		{
-			name: "onlyBaseRoster",
+			name: "only_base_roster",
 			description: "Choisissez d'afficher uniquement le roster de base",
 			type: ApplicationCommandOptionType.Boolean,
 			required: false
@@ -39,7 +39,7 @@ module.exports = {
 
 		const here = interaction.options.getBoolean("here") ?? false;
 
-		const onlyBaseRoster = interaction.options.getBoolean("onlyBaseRoster") ?? false;
+		const onlyBaseRoster = interaction.options.getBoolean("only_base_roster") ?? false;
 
 		const roles = configManager.getConfigValue('roster.roles');
 
